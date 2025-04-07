@@ -10,32 +10,31 @@
 function formatDate(date, fromFormat, toFormat) {
   const splittedOldDate = date.split(fromFormat[3]);
   const resultArray = [];
+  const parsedDate = {};
 
-  const oldDayIndex = fromFormat.indexOf('DD');
-  const oldMonthIndex = fromFormat.indexOf('MM');
-  const oldYearIndex = fromFormat.includes('YYYY')
-    ? fromFormat.indexOf('YYYY')
-    : fromFormat.indexOf('YY');
+  for (let i = 0; i < 3; i++) {
+    parsedDate[fromFormat[i]] = splittedOldDate[i];
+  }
 
   for (let i = 0; i < toFormat.length; i++) {
     switch (toFormat[i]) {
       case 'DD':
-        resultArray.push(splittedOldDate[oldDayIndex]);
+        resultArray.push(parsedDate[toFormat[i]]);
         break;
 
       case 'MM':
-        resultArray.push(splittedOldDate[oldMonthIndex]);
+        resultArray.push(parsedDate[toFormat[i]]);
         break;
 
       case 'YYYY': {
         let year;
 
-        if (fromFormat.includes('YY')) {
-          year = splittedOldDate[oldYearIndex];
+        if ('YY' in parsedDate) {
+          year = parsedDate['YY'];
 
           year = +year < 30 ? '20' + year : '19' + year;
         } else {
-          year = splittedOldDate[oldYearIndex];
+          year = parsedDate['YYYY'];
         }
 
         resultArray.push(year);
@@ -43,7 +42,7 @@ function formatDate(date, fromFormat, toFormat) {
       }
 
       case 'YY': {
-        resultArray.push(splittedOldDate[oldYearIndex].slice(-2));
+        resultArray.push((parsedDate.YY || parsedDate.YYYY).slice(-2));
         break;
       }
     }
